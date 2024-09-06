@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/getCharacterData.js",
+      "src": "api/getcharacterdata.js",
       "use": "@vercel/node"
     }
   ]

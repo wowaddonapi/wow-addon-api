@@ -1,18 +1,22 @@
-const axios = require('axios');
-
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
     const { region, realm, name } = req.query;
-
+  
+    const apiUrl = `https://era.raider.io/api/v1/characters/profile?region=${region}&realm=${realm}&name=${name}&fields=gear,talents`;
+  
     try {
-        const response = await axios.get(`https://raider.io/api/v1/characters/profile?region=${region}&realm=${realm}&name=${name}&fields=gear,talents`);
-
-        const data = response.data;
-
-        return res.status(200).json({
-            ilvl: data.gear.item_level_equipped,
-            talents: data.talents
-        });
+      // Forward the request to Raider.io
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error(`Error fetching data from Raider.io: ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+  
+      // Return the data to the client
+      res.status(200).json(data);
     } catch (error) {
-        return res.status(500).json({ error: 'Error fetching character data' });
+      // Handle any errors
+      res.status(500).json({ error: error.message });
     }
-};
+  }
+  
